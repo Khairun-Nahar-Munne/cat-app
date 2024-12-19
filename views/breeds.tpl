@@ -23,17 +23,17 @@
     <!-- Search Field -->
     <main class="mt-8">
         <div class="flex justify-center">
-            <div class="relative w-96">
+            <div class="relative w-[700px]">
                 <input 
                     type="text" 
                     id="breedSearch" 
-                    placeholder="Search Breed" 
+                    placeholder="{{.Breed.Name}}" 
                     class="px-4 py-2 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
                     onfocus="showDropdown()" 
-                    oninput="filterBreeds()"> <!-- Remove readonly here -->
+                    oninput="filterBreeds()"> <!-- Removed readonly here -->
                 
                 <!-- Clear icon to reset the input -->
-                <button id="clearButton" class="absolute right-2 top-2 text-gray-500 hidden" onclick="clearBreedSearch()">
+                <button id="clearButton" class="absolute right-2 top-2 text-gray-500" onclick="clearBreedSearch()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 
@@ -53,31 +53,35 @@
 
         <!-- Breed Information -->
         {{if .Breed}}
-        <section class="mt-12 max-w-screen-md mx-auto px-4">
-            <div class="mt-6 relative">
-                <div id="breedImagesSlider" class="flex justify-center items-center space-x-4 overflow-hidden">
-                    {{range .BreedImages}}
-                    <div class="w-80 h-80 hidden">
-                        <img src="{{.URL}}" alt="Cat Image" class="w-full h-full object-cover rounded-lg">
-                    </div>
-                    {{end}}
-                </div>
-
-                <!-- Indicator Dots -->
-                <div id="indicatorDots" class="absolute bottom-0 left-0 right-0 flex justify-center pb-4 space-x-2">
-                    {{range .BreedImages}}
-                    <button class="w-3 h-3 rounded-full bg-gray-500 hover:bg-gray-700 focus:outline-none"></button>
-                    {{end}}
-                </div>
+      <section class="mt-4 w-[700px] mx-auto">
+    <div class="mt-1 relative">
+        <div id="breedImagesSlider" class="flex justify-center items-center space-x-4 overflow-hidden">
+            {{range .BreedImages}}
+            <div class="w-full h-96 hidden">
+                <img src="{{.URL}}" alt="Cat Image" class="w-full h-full object-cover rounded-lg">
             </div>
+            {{end}}
+        </div>
+    </div>
 
-            <h2 class="text-2xl font-bold text-gray-800">{{.Breed.Name}}</h2>
-            <p class="text-gray-600 mt-2">{{.Breed.Origin}}</p>
-            <p class="mt-6 text-gray-700">{{.Breed.Description}}</p>
-            <p class="mt-4">
-                <a href="{{.Breed.Wikipedia_URL}}" class="text-blue-500 hover:underline">Learn more on Wikipedia</a>
-            </p>
-        </section>
+    <!-- Indicator Dots - moved below the image slider -->
+    <div id="indicatorDots" class="flex justify-center pb-4 space-x-2 mt-2">
+        {{range .BreedImages}}
+        <button class="w-3 h-3 rounded-full bg-gray-500 hover:bg-gray-700 focus:outline-none"></button>
+        {{end}}
+    </div>
+
+    <div class="text-left mt-2">
+        <h2 class="text-2xl font-bold text-gray-800 inline">{{.Breed.Name}}</h2>
+        <p class="text-gray-600 mt-2 inline ml-2">({{.Breed.Origin}})</p>
+        <p class="text-gray-600 mt-2 inline ml-2">({{.Breed.ID}})</p>
+        <p class="mt-6 text-gray-700">{{.Breed.Description}}</p>
+        <p class="mt-4">
+            <a href="{{.Breed.Wikipedia_URL}}" class="text-blue-500 hover:underline">Learn more on Wikipedia</a>
+        </p>
+    </div>
+</section>
+
         {{end}}
 
     </main>
@@ -119,20 +123,27 @@
         
         isBreedSelected = true; // Mark that a breed was selected
         document.getElementById('breedDropdown').classList.add('hidden');
-        document.getElementById('clearButton').classList.remove('hidden');  // Show the clear button
+        document.getElementById('clearButton').classList.add('hidden');  // Show the clear button
         window.location.href = `/breeds?breed_id=${breedId}`;
     }
 
     function clearBreedSearch() {
         const breedSearchInput = document.getElementById('breedSearch');
+        const clearButton = document.getElementById('clearButton');
+        const breedDropdown = document.getElementById('breedDropdown');
         breedSearchInput.value = ''; // Clear the breed name
-        breedSearchInput.setAttribute('placeholder', originalPlaceholder); // Reset the placeholder
-        document.getElementById('clearButton').classList.add('hidden'); // Hide the clear button
-        breedSearchInput.focus();
 
-        // Reset flag after clearing input
-        isBreedSelected = false;
+        // Remove the placeholder
+        breedSearchInput.setAttribute('placeholder', 'Please Select');
+
+        // Hide the clear button
+        clearButton.classList.add('hidden');
+        
+        // Show the dropdown
+        breedDropdown.classList.remove('hidden');
+
     }
+
 
     function showSlide(index) {
         const slides = document.querySelectorAll("#breedImagesSlider div");
@@ -179,7 +190,6 @@
         }
     });
 </script>
-
 
 </body>
 </html>
