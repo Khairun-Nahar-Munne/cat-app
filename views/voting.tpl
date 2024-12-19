@@ -21,29 +21,31 @@
 
     <!-- Main Image Section -->
     <main class="mt-8 flex justify-center">
-    <div class="flex justify-center items-center">
-        <img id="catImage" src="{{.ImageURL}}" alt="Cat Image" class="w-[800px] h-[600px] object-cover rounded-lg">
-    </div>
+        <div class="flex justify-center items-center w-full max-w-screen-md px-4">
+            <img id="catImage" src="{{.ImageURL}}" alt="Cat Image" class="w-full h-[500px] max-w-full object-cover rounded-lg">
+        </div>
     </main>
 
     <!-- Footer -->
     <footer class="mt-8">
-        <div class="flex justify-between items-center px-8">
-            <!-- Heart Button (Left Side) -->
-            <div>
-                <button id="heartBtn" class="text-3xl text-black hover:text-red-500">
-                    <i class="fa-regular fa-heart"></i>
-                </button>
-            </div>
+        <div class="w-full max-w-screen-md mx-auto px-8">
+            <div class="flex justify-between items-center">
+                <!-- Heart Button (Left Side) -->
+                <div>
+                    <button id="heartBtn" class="text-3xl text-black hover:text-red-500">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </div>
 
-            <!-- Like and Dislike Buttons (Right Side) -->
-            <div class="flex space-x-4">
-                <button id="likeBtn" class="text-3xl px-4 py-2 text-black rounded hover:text-green-600">
-                    <i class="fa-regular fa-thumbs-up"></i>
-                </button>
-                <button id="dislikeBtn" class="text-3xl px-4 py-2 text-black rounded hover:text-red-600">
-                    <i class="fa-regular fa-thumbs-down"></i>
-                </button>
+                <!-- Like and Dislike Buttons (Right Side) -->
+                <div class="flex space-x-4">
+                    <button id="likeBtn" class="text-3xl px-4 py-2 text-black rounded hover:text-green-600">
+                        <i class="fa-regular fa-thumbs-up"></i>
+                    </button>
+                    <button id="dislikeBtn" class="text-3xl px-4 py-2 text-black rounded hover:text-red-600">
+                        <i class="fa-regular fa-thumbs-down"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </footer>

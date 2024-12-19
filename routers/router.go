@@ -8,4 +8,6 @@ import (
 func init() {
 	web.Router("/", &controllers.VotingController{})
 	web.Router("/voting", &controllers.VotingController{})
+	web.Router("/breeds", &controllers.BreedController{}, "get:DisplayBreeds")
+
 }
