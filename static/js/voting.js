@@ -5,18 +5,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const catImage = document.getElementById("catImage");
     const loadingImage = "/static/img/download.png"; // Adjust path as needed
 
+    // Function to fetch a new cat image
     const fetchNewImage = async () => {
-        // Show loading image
+        // Show loading image while waiting for new cat image
         const originalImage = catImage.src;
         catImage.src = loadingImage;
 
         try {
             const response = await fetch("/voting");
             if (response.ok) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(await response.text(), "text/html");
-                const newImageURL = doc.querySelector("#catImage").src;
-                catImage.src = newImageURL; // Update to the new image
+                const data = await response.json();
+                catImage.src = data.imageURL; // Update to the new image
             } else {
                 console.error("Failed to fetch new image:", response.status);
                 catImage.src = originalImage; // Restore original image on failure
@@ -27,7 +26,5 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    likeBtn.addEventListener("click", fetchNewImage);
-    dislikeBtn.addEventListener("click", fetchNewImage);
-    heartBtn.addEventListener("click", fetchNewImage);
+    heartBtn.addEventListener("click", fetchNewImage); // Just fetch new image
 });

@@ -9,5 +9,6 @@ func init() {
 	web.Router("/", &controllers.VotingController{})
 	web.Router("/voting", &controllers.VotingController{})
 	web.Router("/breeds", &controllers.BreedController{}, "get:DisplayBreeds")
+	web.Router("/voting/history", &controllers.VotingController{}, "get:GetVotes")
 
 }
