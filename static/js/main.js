@@ -5,6 +5,9 @@ let currentSlide = 0;
 let breeds = [];
 let isBreedSelected = false;
 let originalPlaceholder;
+const tabs = document.querySelectorAll('button[id$="Tab"]');
+
+// Add click event listener to each tab
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -278,7 +281,21 @@ function submitVote(value, imageId) {
         buttons.forEach(button => button.disabled = false);
     });
 }
-
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => handleTabClick(tab));
+  });
+  
+  function handleTabClick(clickedTab) {
+    // Remove active state from all tabs
+    tabs.forEach(tab => {
+      tab.classList.remove('text-red-500');
+      tab.classList.add('text-gray-400');
+    });
+    
+    // Add active state to clicked tab
+    clickedTab.classList.remove('text-gray-400');
+    clickedTab.classList.add('text-red-500');
+  }
 function submitFavoriteAndFetch(imageId) {
     const buttons = document.querySelectorAll('button');
     const spinner = document.getElementById('loadingSpinnerImg');
@@ -297,15 +314,6 @@ function submitFavoriteAndFetch(imageId) {
             'X-Requested-With': 'XMLHttpRequest'
         },
         body: `image_id=${imageId}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            // Then fetch a new image
-            return fetch('/api/cat/fetch');
-        } else {
-            throw new Error(data.message);
-        }
     })
     .then(response => response.json())
     .then(data => {

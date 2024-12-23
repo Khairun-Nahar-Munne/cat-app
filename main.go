@@ -2,9 +2,9 @@ package main
 
 import (
 	_ "cat-app/routers"
-	"github.com/beego/beego/v2/server/web"
+	"github.com/astaxie/beego"
 )
 
 func main() {
-	web.Run()
+	beego.Run()
 }
