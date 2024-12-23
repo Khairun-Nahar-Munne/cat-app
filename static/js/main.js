@@ -181,6 +181,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.removeFavorite = removeFavorite;
 });
+document.getElementById('fetchImageButton').addEventListener('click', function () {
+    const imageId = document.getElementById('imageId').value;
+    submitFavoriteAndFetch(imageId);
+});
+
 // Tab Management
 function initializeTabs() {
     const votingTab = document.getElementById('votingTab');
@@ -243,10 +248,7 @@ function showError(message) {
 }
 
 // Event listener for the heart button
-document.getElementById('fetchImageButton').addEventListener('click', function() {
-    const imageId = document.getElementById('imageId').value;
-    submitFavoriteAndFetch(imageId);
-});
+
 
 function submitVote(value, imageId) {
     const buttons = document.querySelectorAll('button');
@@ -268,7 +270,7 @@ function submitVote(value, imageId) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            updateImage(data.image_url, data.image_id);
+            updateImage(data.image_url, data.image_id, buttons, spinner, catImage);
         } else {
             showError(data.message);
         }
@@ -296,11 +298,12 @@ tabs.forEach(tab => {
     clickedTab.classList.remove('text-gray-400');
     clickedTab.classList.add('text-red-500');
   }
+ 
 function submitFavoriteAndFetch(imageId) {
     const buttons = document.querySelectorAll('button');
     const spinner = document.getElementById('loadingSpinnerImg');
     const catImage = document.getElementById('catImage');
-    
+
     // Disable buttons and show spinner, hide current image
     buttons.forEach(button => button.disabled = true);
     spinner.classList.remove('hidden');
@@ -315,49 +318,49 @@ function submitFavoriteAndFetch(imageId) {
         },
         body: `image_id=${imageId}`
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            updateImage(data.image_url, data.image_id);
-        } else {
-            showError(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showError('An error occurred: ' + error.message);
-    })
-    .finally(() => {
-        // Hide spinner, show image and re-enable buttons
-        spinner.classList.add('hidden');
-        catImage.classList.remove('hidden');
-        buttons.forEach(button => button.disabled = false);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                updateImage(data.image_url, data.image_id, buttons, spinner, catImage);
+            } else {
+                showError(data.message);
+                buttons.forEach(button => button.disabled = false);
+                spinner.classList.add('hidden');
+                catImage.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showError('An error occurred: ' + error.message);
+            buttons.forEach(button => button.disabled = false);
+            spinner.classList.add('hidden');
+            catImage.classList.remove('hidden');
+        });
 }
 
-// Make sure your updateImage function also handles the spinner
-function updateImage(imageUrl, imageId) {
-    const catImage = document.getElementById('catImage');
-    const spinner = document.getElementById('loadingSpinnerImg');
-    
+function updateImage(imageUrl, imageId, buttons, spinner, catImage) {
     // Create a new image object to preload the image
     const newImage = new Image();
-   
-    newImage.onload = function() {
+
+    newImage.onload = function () {
         // Once the new image is loaded, update the src and show it
         catImage.src = imageUrl;
         document.getElementById('imageId').value = imageId;
-        
+
         // Show the image and hide the spinner
         catImage.classList.remove('hidden');
         spinner.classList.add('hidden');
+        buttons.forEach(button => button.disabled = false);
     };
-    
+
+    // Handle image loading errors
+    newImage.onerror = function () {
+        showError('Failed to load the image.');
+        buttons.forEach(button => button.disabled = false);
+        spinner.classList.add('hidden');
+        catImage.classList.remove('hidden');
+    };
+
     // Start loading the new image
     newImage.src = imageUrl;
 }
-
-
-
-// Breeds Section Functionality
-
