@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"cat-app/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"cat-app/models"
+
 	"github.com/astaxie/beego"
 )
 
@@ -15,18 +16,6 @@ type MainController struct {
 }
 
 
-type Breed struct {
-	ID            string `json:"id"`
-	Name          string `json:"name"`
-	Origin        string `json:"origin"`
-	Temperament   string `json:"temperament"`
-	Description   string `json:"description"`
-	Wikipedia_URL string `json:"wikipedia_url"`
-}
-
-type BreedImage struct {
-	URL string `json:"url"`
-}
 
 
 // Get handles the main page

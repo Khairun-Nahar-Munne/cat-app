@@ -98,11 +98,12 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             return;
         }
-
+    
         const container = document.createElement('div');
-        
+        container.classList.add('max-w-screen-lg', 'mx-auto', 'px-1');  // Ensures consistent max width and padding
+    
         if (currentView === 'grid') {
-            container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+            container.classList.add('grid', 'grid-cols-2', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-6');
             
             favorites.forEach(favorite => {
                 const card = document.createElement('div');
@@ -114,9 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="p-4">
                         <div class="flex justify-between items-center">
-                            <span class="text-sm text-gray-500">
-                                Added: ${new Date(favorite.created_at).toLocaleDateString()}
-                            </span>
                             <button onclick="removeFavorite('${favorite.id}')" 
                                     class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">
                                 Remove
@@ -127,31 +125,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 container.appendChild(card);
             });
         } else {
-            container.className = 'space-y-4';
+            container.classList.add('space-y-4', 'w-full', 'md:w-[700px]');
             
             favorites.forEach(favorite => {
                 const listItem = document.createElement('div');
-                listItem.className = 'flex items-center bg-white rounded-lg shadow-lg p-4';
+                listItem.className = 'flex items-center justify-between bg-white rounded-lg shadow-lg';
                 listItem.innerHTML = `
                     <img src="${favorite.image.url}" alt="Cat" 
-                        class="w-24 h-24 object-cover rounded-lg">
-                    <div class="ml-4 flex-grow">
-                        <span class="text-sm text-gray-500">
-                            Added: ${new Date(favorite.created_at).toLocaleDateString()}
-                        </span>
-                    </div>
+                        class="w-28 h-24 object-cover rounded-lg">
                     <button onclick="removeFavorite('${favorite.id}')" 
-                            class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">
+                            class="px-3 ml-4 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">
                         Remove
                     </button>
                 `;
                 container.appendChild(listItem);
             });
         }
-
+    
         favoriteContent.innerHTML = '';
         favoriteContent.appendChild(container);
     }
+    
 
     // Add click event listener to the Favorites tab
     favouriteTab.addEventListener('click', () => {
@@ -163,8 +157,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     gridViewBtn.addEventListener('click', () => {
         currentView = 'grid';
-        gridViewBtn.className = 'px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition';
-        listViewBtn.className = 'px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition';
+        gridViewBtn.className = 'px-4 py-2 text-orange-500 text-2xl rounded hover:text-gray-600 transition';
+        listViewBtn.className = 'px-4 py-2 text-gray-500 text-2xl rounded hover:text-orange-600 transition';
         if (hasLoadedFavorites) {
             getFavorites();
         }
@@ -172,8 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     listViewBtn.addEventListener('click', () => {
         currentView = 'list';
-        gridViewBtn.className = 'px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition';
-        listViewBtn.className = 'px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition';
+        gridViewBtn.className = 'px-4 py-2 text-gray-500 text-2xl rounded hover:text-orange-600 transition';
+        listViewBtn.className = 'px-4 py-2 text-orange-500 text-2xl rounded hover:text-gray-600 transition';
         if (hasLoadedFavorites) {
             getFavorites();
         }
@@ -181,6 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.removeFavorite = removeFavorite;
 });
+
 document.getElementById('fetchImageButton').addEventListener('click', function () {
     const imageId = document.getElementById('imageId').value;
     submitFavoriteAndFetch(imageId);
@@ -290,13 +285,13 @@ tabs.forEach(tab => {
   function handleTabClick(clickedTab) {
     // Remove active state from all tabs
     tabs.forEach(tab => {
-      tab.classList.remove('text-red-500');
+      tab.classList.remove('text-orange-500');
       tab.classList.add('text-gray-400');
     });
     
     // Add active state to clicked tab
     clickedTab.classList.remove('text-gray-400');
-    clickedTab.classList.add('text-red-500');
+    clickedTab.classList.add('text-orange-500');
   }
  
 function submitFavoriteAndFetch(imageId) {
@@ -341,7 +336,6 @@ function submitFavoriteAndFetch(imageId) {
 function updateImage(imageUrl, imageId, buttons, spinner, catImage) {
     // Create a new image object to preload the image
     const newImage = new Image();
-
     newImage.onload = function () {
         // Once the new image is loaded, update the src and show it
         catImage.src = imageUrl;

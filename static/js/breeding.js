@@ -10,31 +10,50 @@ document.addEventListener("DOMContentLoaded", function () {
     const sliderImages = document.getElementById("sliderImages");
     const sliderDots = document.getElementById("sliderDots");
     const breedInfo = document.getElementById("breedInfo");
-    const breedsSection = document.getElementById("breedsSection");
 
     let sliderInterval;
+    let allBreeds = []; // To store all fetched breeds
 
     // Fetch all breeds
     fetch("/api/breeds")
         .then(response => response.json())
         .then(breeds => {
-            const breedList = breeds.map(breed => `
-                <div class="p-2 cursor-pointer hover:bg-gray-200" data-breed-id="${breed.id}">
-                    ${breed.name}
-                </div>`).join("");
-            breedDropdown.innerHTML = breedList;
+            allBreeds = breeds;
+            renderBreedDropdown(breeds);
 
             // Automatically fetch and display the first breed's info
             if (breeds.length > 0) {
                 const firstBreed = breeds[0];
-                breedSearch.value = firstBreed.name;
+                breedSearch.placeholder = firstBreed.name; // Show breed name in placeholder
+                renderBreedDropdown(allBreeds,firstBreed.id);
                 fetchBreedInfo(firstBreed.id);
                 clearSearch.classList.remove("hidden");
             }
         });
 
+    // Function to render the breed dropdown
+    function renderBreedDropdown(breeds, selectedBreedID = null) {
+        const breedList = breeds.map(breed => `
+            <div class="p-2 cursor-pointer hover:bg-gray-200 ${breed.id === selectedBreedID ? 'bg-blue-300' : ''}" 
+                data-breed-id="${breed.id}">
+                ${breed.name}
+            </div>
+        `).join("");
+        breedDropdown.innerHTML = breedList;
+    }
+
     // Show dropdown on input click
     breedSearch.addEventListener("click", () => {
+        breedDropdown.classList.remove("hidden");
+    });
+
+    // Filter dropdown as user types
+    breedSearch.addEventListener("input", () => {
+        const query = breedSearch.value.toLowerCase();
+        const filteredBreeds = allBreeds.filter(breed => 
+            breed.name.toLowerCase().includes(query)
+        );
+        renderBreedDropdown(filteredBreeds);
         breedDropdown.classList.remove("hidden");
     });
 
@@ -49,21 +68,23 @@ document.addEventListener("DOMContentLoaded", function () {
     breedDropdown.addEventListener("click", (e) => {
         const breedID = e.target.dataset.breedId;
         const breedNameSelected = e.target.textContent;
-
-        breedSearch.value = breedNameSelected;
+    
+        breedSearch.value = ""; // Clear input value
+        breedSearch.placeholder = breedNameSelected; // Set placeholder to selected breed name
         clearSearch.classList.remove("hidden");
         breedDropdown.classList.add("hidden");
-
+    
+        // Pass the selected breed ID when rendering the dropdown
+        renderBreedDropdown(allBreeds, breedID);
         fetchBreedInfo(breedID);
     });
-
     // Clear search
     clearSearch.addEventListener("click", () => {
         breedSearch.value = "";
+        breedSearch.placeholder = "Please select a breed..."; // Reset placeholder
         clearSearch.classList.add("hidden");
-        breedSearch.placeholder = "Please select a breed...";
+        renderBreedDropdown(allBreeds); // Reset dropdown
     });
-
     // Fetch breed info and images
     function fetchBreedInfo(breedID) {
         fetch(`/api/breed/${breedID}`)
