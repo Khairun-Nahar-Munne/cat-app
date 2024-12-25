@@ -1,0 +1,9 @@
+ go clean -testcache
+ go test -v ./tests 
+
+ step 1:  go test -coverprofile coverage.out ./...
+ step 2:  go tool cover -html coverage.out        
+
+ other:
+ go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out

@@ -1,21 +1,22 @@
 package routers
 
 import (
-    "cat-app/controllers"
-    "github.com/astaxie/beego"
+	"cat-app/controllers"
+
+	beego "github.com/beego/beego/v2/server/web"
 )
 
 func init() {
-    beego.Router("/", &controllers.MainController{})
-    beego.Router("/api/vote", &controllers.MainController{}, "post:SubmitVote")
-    beego.Router("/api/cat/fetch", &controllers.MainController{}, "get:FetchNewImage")
-	beego.Router("/api/vote", &controllers.MainController{}, "get:GetVotes")
+	beego.Router("/", &controllers.MainController{})
+	beego.Router("/api/vote", &controllers.VoteController{}, "post:SubmitVote")
+	beego.Router("/api/cat/fetch", &controllers.VoteController{}, "get:FetchNewImage")
+	beego.Router("/api/vote", &controllers.VoteController{}, "get:GetVotes")
 
-    beego.Router("/api/favorite", &controllers.MainController{}, "post:SubmitFavorite")
-    beego.Router("/api/favourite", &controllers.MainController{}, "get:GetFavorites")
-    beego.Router("/api/favourite/:id", &controllers.MainController{}, "delete:DeleteFavorite") 
+	beego.Router("/api/favorite", &controllers.FavController{}, "post:SubmitFavorite")
+	beego.Router("/api/favourite", &controllers.FavController{}, "get:GetFavorites")
+	beego.Router("/api/favourite/:id", &controllers.FavController{}, "delete:DeleteFavorite")
 
-    beego.Router("/api/breeds", &controllers.MainController{}, "get:GetBreeds")
-    beego.Router("/api/breed/:id", &controllers.MainController{}, "get:GetBreedDetails")
-    
+	beego.Router("/api/breeds", &controllers.BreedController{}, "get:GetBreeds")
+	beego.Router("/api/breed/:id", &controllers.BreedController{}, "get:GetBreedDetails")
+
 }

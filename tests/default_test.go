@@ -1,42 +1,38 @@
-package test
+Package tests
 
 import (
+	"cat-app/controllers"
+	_ "cat-app/routers" // Import your routers so Beego initializes them
 	"net/http"
 	"net/http/httptest"
-	"testing"
-	"runtime"
 	"path/filepath"
-
-    "github.com/beego/beego/v2/core/logs"
-
-	_ "cat-app/routers"
+	"runtime"
+	"testing"
 
 	beego "github.com/beego/beego/v2/server/web"
-	. "github.com/smartystreets/goconvey/convey"
+	"github.com/stretchr/testify/assert" // Use testify for easier assertion
 )
 
 func init() {
+	// Get the absolute path of the root of your Beego application
 	_, file, _, _ := runtime.Caller(0)
-	apppath, _ := filepath.Abs(filepath.Dir(filepath.Join(file, ".." + string(filepath.Separator))))
+	apppath, _ := filepath.Abs(filepath.Dir(filepath.Join(file, ".."+string(filepath.Separator))))
 	beego.TestBeegoInit(apppath)
+	beego.Router("/", &controllers.MainController{})
 }
 
+func TestMainControllerGetDef(t *testing.T) {
+	// Create a new HTTP request to test the MainController Get method
+	req, err := http.NewRequest("GET", "/", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// TestBeego is a sample to run an endpoint test
-func TestBeego(t *testing.T) {
-	r, _ := http.NewRequest("GET", "/", nil)
-	w := httptest.NewRecorder()
-	beego.BeeApp.Handlers.ServeHTTP(w, r)
+	// Record the response
+	rr := httptest.NewRecorder()
+	beego.BeeApp.Handlers.ServeHTTP(rr, req)
 
-	logs.Trace("testing", "TestBeego", "Code[%d]\n%s", w.Code, w.Body.String())
+	// Check the response status code
+	assert.Equal(t, http.StatusOK, rr.Code, "Expected status code 200")
 
-	Convey("Subject: Test Station Endpoint\n", t, func() {
-	        Convey("Status Code Should Be 200", func() {
-	                So(w.Code, ShouldEqual, 200)
-	        })
-	        Convey("The Result Should Not Be Empty", func() {
-	                So(w.Body.Len(), ShouldBeGreaterThan, 0)
-	        })
-	})
 }
-
