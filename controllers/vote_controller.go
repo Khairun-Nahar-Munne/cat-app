@@ -32,10 +32,7 @@ func (c *VoteController) FetchNewImage() {
 
 func fetchNewImage() models.VoteResponse {
 	// Fetch API URL and API key from the config file
-	apiUrl, err := beego.AppConfig.String("cat_api_url")
-	if err != nil || apiUrl == "" {
-		return models.VoteResponse{Status: "error", Message: "API URL is missing or not configured"}
-	}
+	apiUrl:= "https://api.thecatapi.com/v1"
 
 	apiKey, err := beego.AppConfig.String("api_key")
 	if err != nil || apiKey == "" {

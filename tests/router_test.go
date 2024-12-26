@@ -2,6 +2,7 @@ package tests
 
 import (
 	_ "cat-app/routers" // Import your routers so Beego initializes them
+
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"

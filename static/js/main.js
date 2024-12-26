@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         const container = document.createElement('div');
-        container.classList.add('max-w-screen-lg', 'mx-auto', 'px-1');  // Ensures consistent max width and padding
+        container.classList.add('max-w-screen-lg', 'mx-auto', 'px-4');  // Ensures consistent max width and padding
     
         if (currentView === 'grid') {
             container.classList.add('grid', 'grid-cols-2', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-6');
@@ -125,16 +125,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 container.appendChild(card);
             });
         } else {
-            container.classList.add('space-y-4', 'w-full', 'md:w-[700px]');
+            container.classList.add('space-y-4', 'w-full', 'md:w-[700px]', 'px-4');
             
             favorites.forEach(favorite => {
                 const listItem = document.createElement('div');
                 listItem.className = 'flex items-center justify-between bg-white rounded-lg shadow-lg';
                 listItem.innerHTML = `
                     <img src="${favorite.image.url}" alt="Cat" 
-                        class="w-28 h-24 object-cover rounded-lg">
+                        class="w-36 h-36 object-cover rounded-lg">
                     <button onclick="removeFavorite('${favorite.id}')" 
-                            class="px-3 ml-4 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">
+                            class="mr-2 px-3 ml-4 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">
                         Remove
                     </button>
                 `;

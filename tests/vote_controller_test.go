@@ -83,7 +83,6 @@ func TestFetchNewImageDef(t *testing.T) {
 }
 
 // Test for FetchNewImage when API returns an error
-// Test for FetchNewImage when API returns an error
 func TestFetchNewImageError(t *testing.T) {
 	// Mock the HTTP client (RoundTripper)
 	mockRoundTripper := new(MockRoundTripper)
@@ -121,3 +120,4 @@ func TestFetchNewImageError(t *testing.T) {
 	// Assert that the mocked RoundTripper was called
 	mockRoundTripper.AssertExpectations(t)
 }
+

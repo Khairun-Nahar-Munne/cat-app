@@ -13,82 +13,48 @@ import (
 type BreedController struct {
 	beego.Controller
 }
-// GetBreeds handles fetching all breeds
+
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
+// GetBreeds handles the GET request for retrieving all cat breeds
 func (c *BreedController) GetBreeds() {
-	// Fetch the API URL and API key from the Beego config
-	apiUrl, err := beego.AppConfig.String("cat_api_url")
-	if err != nil || apiUrl == "" {
-		c.Data["json"] = map[string]interface{}{
-			"status":  "error",
-			"message": "API URL is missing or not configured",
-		}
-		c.ServeJSON()
-		return
-	}
-
-	apiKey, err := beego.AppConfig.String("api_key")
-	if err != nil || apiKey == "" {
-		c.Data["json"] = map[string]interface{}{
-			"status":  "error",
-			"message": "API key is missing or not configured",
-		}
-		c.ServeJSON()
-		return
-	}
-
-	// Append /breeds to the base API URL
-	url := fmt.Sprintf("%s/breeds", apiUrl)
-
-	// Create a new GET request
-	req, err := http.NewRequest("GET", url, nil)
+	// Make HTTP request to the cat API
+	resp, err := http.Get("https://api.thecatapi.com/v1/breeds")
 	if err != nil {
-		c.Data["json"] = map[string]interface{}{
-			"status":  "error",
-			"message": err.Error(),
-		}
-		c.ServeJSON()
-		return
-	}
-
-	// Set the API key header
-	req.Header.Set("x-api-key", apiKey)
-
-	// Create an HTTP client and send the request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		c.Data["json"] = map[string]interface{}{
-			"status":  "error",
-			"message": err.Error(),
-		}
+		c.Ctx.Output.SetStatus(http.StatusInternalServerError)
+		c.Data["json"] = ErrorResponse{Message: "Failed to fetch breeds"}
 		c.ServeJSON()
 		return
 	}
 	defer resp.Body.Close()
 
-	// Read the response body
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		c.Data["json"] = map[string]interface{}{
-			"status":  "error",
-			"message": err.Error(),
-		}
+		c.Ctx.Output.SetStatus(http.StatusInternalServerError)
+		c.Data["json"] = ErrorResponse{Message: "Failed to read response"}
 		c.ServeJSON()
 		return
 	}
 
-	// Parse the response body to get the breeds
+	// Check if the response status is not OK
+	if resp.StatusCode != http.StatusOK {
+		c.Ctx.Output.SetStatus(resp.StatusCode)
+		c.Data["json"] = ErrorResponse{Message: fmt.Sprintf("API returned status: %d", resp.StatusCode)}
+		c.ServeJSON()
+		return
+	}
+
+	// Try to parse the response
 	var breeds []models.Breed
 	if err := json.Unmarshal(body, &breeds); err != nil {
-		c.Data["json"] = map[string]interface{}{
-			"status":  "error",
-			"message": err.Error(),
-		}
+		c.Ctx.Output.SetStatus(http.StatusInternalServerError)
+		c.Data["json"] = ErrorResponse{Message: "Failed to parse response"}
 		c.ServeJSON()
 		return
 	}
 
-	// Return the breeds as a JSON response
 	c.Data["json"] = breeds
 	c.ServeJSON()
 }
