@@ -1,4 +1,4 @@
-Package tests
+package tests
 
 import (
 	"cat-app/controllers"
